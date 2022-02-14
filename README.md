@@ -1,3 +1,4 @@
-words list from http://www.yougowords.com/5-letters-18
+# CS 361 Word Microservice
+Python api providing hints for Word Guessing Game
 
-image micro-service endpoint:
+Words list from http://www.yougowords.com/5-letters-18
