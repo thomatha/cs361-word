@@ -17,15 +17,22 @@ app = Flask(__name__)
 
 
 def getWord(wordsList):
-    # get a random word from list
-    number = random.randint(0, 844)
+    """ returns a random word """
+
+    number = random.randint(0, 10000)
+    size = len(wordsList)
+
+    # convert number that is > size of words list
+    if number > size:
+        number = number % size
     dailyWord = wordsList[number]
 
     return dailyWord
 
 
 def wordInList(guessWord):
-    # return True if guess word in list, else False
+    """ returns True if guess word is in list, else False """
+
     wordsList = getWordsList()
     if guessWord in wordsList:
         return True
@@ -34,8 +41,9 @@ def wordInList(guessWord):
 
 
 def getHints(guessWord, dailyWord):
-    # compare guess word to daily word
-    # for each letter give hint: not-in, not-in-position, in-position
+    """ compare guess word to daily word
+    for each letter returns hint: not-in, not-in-position, in-position """
+
     secretLetters = list(dailyWord)
     guessLetters = list(guessWord)
 
@@ -63,9 +71,11 @@ def cors(response):
     response.headers["Access-Control-Allow-Origin"] = "*"
     return response
 
+# root route
 @app.route('/')
 def get():
-    """ api endpoint: url/?guess=GUESSWORD """
+    """ HTTP GET api endpoint: url/?guess=GUESSWORD 
+    returns error or hints """
 
     guessWord = request.args.get('guess').upper()
 
@@ -74,7 +84,6 @@ def get():
         return jsonify(error)
 
     # pick a new word each day
-    # current system date as string
     today = str(date.today())
     try:
         # read file for daily word
@@ -84,7 +93,7 @@ def get():
             day = content[1]
 
             if day != today:
-                # write new word and date to file
+                # if new day, write new word and date to file
                 with open('daily_word.txt', 'w') as file:
                     dailyWord = getWord(getWordsList())
                     file.write(dailyWord)
@@ -92,7 +101,7 @@ def get():
                     file.write(today)
 
     except:
-        # write new word and date to file
+        # create file, write new word and date 
         with open('daily_word.txt', 'w') as file:
             dailyWord = getWord(getWordsList())
             file.write(dailyWord)

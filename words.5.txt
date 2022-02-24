@@ -1,6 +1,4 @@
-def getWordsList():
-    return [
-        "ABOUT",
+"ABOUT",
 "ABOVE",
 "ABUSE",
 "ACIDS",
@@ -115,7 +113,6 @@ def getWordsList():
 "BLAME",
 "BLANK",
 "BLAST",
-"BLEED",
 "BLEND",
 "BLESS",
 "BLIND",
@@ -261,12 +258,10 @@ def getWordsList():
 "CRACK",
 "CRAFT",
 "CRAIG",
-"CRAMP",
 "CRAPS",
 "CRASH",
 "CRAZY",
 "CREAM",
-"CREED",
 "CREEK",
 "CREST",
 "CRIME",
@@ -1243,4 +1238,3 @@ def getWordsList():
 "YOUTH",
 "YUKON",
 "ZONES"
-    ]
