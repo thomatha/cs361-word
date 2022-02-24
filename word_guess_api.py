@@ -1,6 +1,6 @@
-""" Word Guessing Microservice 
+""" Word Guessing Microservice API
 Pick a new word each day.
-Compare guess word to hidden word. Is the word in the list?
+Compare guess word to hidden daily word. Is the word in the list?
 For each letter give hints: 
 (1) grey = not in word at all
 (2) gold = in wrong spot
@@ -16,18 +16,43 @@ from words import getWordsList
 app = Flask(__name__)
 
 
-def getWord(wordsList):
-    """ returns a random word """
+def getWord():
+    """ returns a new word each day """
 
+    words = getWordsList()
     number = random.randint(0, 10000)
-    size = len(wordsList)
+    size = len(words)
 
-    # convert number that is > size of words list
+    # convert random number that is > size of words list
     if number > size:
         number = number % size
-    dailyWord = wordsList[number]
 
-    return dailyWord
+    today = str(date.today())
+
+    try:
+        # read file for daily word
+        with open('daily_word.txt', 'r') as file:
+            content = file.readlines()
+            dailyWord = content[0].strip()
+            day = content[1]
+
+            # if new day, write new word and date to file
+            if day != today:
+                with open('daily_word.txt', 'w') as file:
+                    dailyWord = words[number]
+                    file.write(dailyWord)
+                    file.write('\n')
+                    file.write(today)
+    except:
+        # if no file, create & write new word and date 
+        with open('daily_word.txt', 'w') as file:
+            dailyWord = words[number]
+            file.write(dailyWord)
+            file.write('\n')
+            file.write(today)
+
+    finally:
+        return dailyWord
 
 
 def wordInList(guessWord):
@@ -65,16 +90,18 @@ def getHints(guessWord, dailyWord):
 
     return jsonify(hints)
 
+
 # allows web app to make cross origin requests
 @app.after_request
 def cors(response):
     response.headers["Access-Control-Allow-Origin"] = "*"
     return response
 
+
 # root route
 @app.route('/')
 def get():
-    """ HTTP GET api endpoint: url/?guess=GUESSWORD 
+    """ HTTP GET API endpoint & parameter: url/?guess=GUESSWORD 
     returns error or hints """
 
     guessWord = request.args.get('guess').upper()
@@ -82,34 +109,9 @@ def get():
     if not wordInList(guessWord):
         error = dict(error='Word not in list.')
         return jsonify(error)
+    
+    return getHints(guessWord, getWord())
 
-    # pick a new word each day
-    today = str(date.today())
-    try:
-        # read file for daily word
-        with open('daily_word.txt', 'r') as file:
-            content = file.readlines()
-            dailyWord = content[0].strip()
-            day = content[1]
-
-            if day != today:
-                # if new day, write new word and date to file
-                with open('daily_word.txt', 'w') as file:
-                    dailyWord = getWord(getWordsList())
-                    file.write(dailyWord)
-                    file.write('\n')
-                    file.write(today)
-
-    except:
-        # create file, write new word and date 
-        with open('daily_word.txt', 'w') as file:
-            dailyWord = getWord(getWordsList())
-            file.write(dailyWord)
-            file.write('\n')
-            file.write(today)
-
-    finally:
-        return getHints(guessWord, dailyWord)
 
 
 
