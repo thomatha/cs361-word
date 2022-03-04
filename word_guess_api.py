@@ -19,17 +19,16 @@ app = Flask(__name__)
 
 
 def get_word():
-    """ returns the daily word """
+    """ returns the randomly selected daily word """
 
     words = get_words_list()
     size = len(words)
     number = random.randint(0, 10000)
+    today = str(date.today())
 
     # convert random number that is > size of words list
     if number > size:
         number = number % size
-
-    today = str(date.today())
 
     try:
         # read file for daily word
@@ -118,4 +117,4 @@ def get():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

@@ -1,0 +1,1 @@
+web gunicorn word_guess_api:app

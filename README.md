@@ -1,4 +1,7 @@
 # CS 361 Word Microservice
-Python api providing hints for Word Guessing Game
 
-Words list from http://www.yougowords.com/5-letters-18
+Python Flask API providing hints for user's guess word,
+integrates with Word Guessing Game web app, built in React JS
+
+HTTP Get request endpoint: url/?guess=userGuessWord
+parameter: userGuessWord
