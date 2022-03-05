@@ -41,16 +41,12 @@ def get_word():
             if day != today:
                 with open('daily_word.txt', 'w') as file:
                     daily_word = words[number]
-                    file.write(daily_word)
-                    file.write('\n')
-                    file.write(today)
+                    file.write(daily_word + '\n' + today)
     except:
         # if no file, create & write new word and date 
         with open('daily_word.txt', 'w') as file:
             daily_word = words[number]
-            file.write(daily_word)
-            file.write('\n')
-            file.write(today)
+            file.write(daily_word + '\n' + today)
 
     finally:
         return daily_word
