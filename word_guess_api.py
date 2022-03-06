@@ -14,6 +14,8 @@ import random
 from datetime import date
 from flask import Flask, jsonify, request
 from words import get_words_list
+from github import Github
+import os
 
 app = Flask(__name__)
 
@@ -30,26 +32,25 @@ def get_word():
     if number > size:
         number = number % size
 
-    try:
-        # read file for daily word
-        with open('daily_word.txt', 'r') as file:
-            content = file.readlines()
-            daily_word = content[0].strip()
-            day = content[1]
+    # daily word stored in github repo
+    github_api = Github(os.getenv('WORD_TOKEN'))
+    repository = github_api.get_user().get_repo('cs361-word-microservice')
 
-            # if new day, write new word and date to file
-            if day != today:
-                with open('daily_word.txt', 'w') as file:
-                    daily_word = words[number]
-                    file.write(daily_word + '\n' + today)
-    except:
-        # if no file, create & write new word and date 
-        with open('daily_word.txt', 'w') as file:
-            daily_word = words[number]
-            file.write(daily_word + '\n' + today)
+    # read file for daily word
+    file = repository.get_contents('daily_word.txt')
+    content = file.decoded_content.decode()
 
-    finally:
-        return daily_word
+    # convert string to list
+    content = content.split('\n')
+    daily_word = content[0].strip()
+    day = content[1]
+
+    # if new day, write new word and date to file
+    if day != today:
+        daily_word = words[number]
+        repository.update_file('daily_word.txt', 'update word', daily_word + '\n' + today, file.sha)
+    
+    return daily_word
 
 
 def word_in_list(guess_word):
