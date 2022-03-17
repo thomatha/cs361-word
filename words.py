@@ -177,7 +177,6 @@ def get_words_list():
         "ARGUE",
         "ARIAS",
         "ARISE",
-        "ARITY",
         "ARMED",
         "ARMOR",
         "AROMA",
